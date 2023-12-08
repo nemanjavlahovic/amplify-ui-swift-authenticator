@@ -19,12 +19,12 @@ public struct SignUpView<Header: View,
     private let footerContent: Footer
     private let overridenSignUpFields: [SignUpField]?
     
-    enum SignupStep {
+    public enum SignupStep {
         case email
         case detailed
     }
 
-    @State private var step: SignupStep = .email
+    @Binding private var step: SignupStep
     var focusedField: FocusState<SignUpAttribute?> = FocusState()
 
     /// Creates a `SignUpView`
@@ -35,6 +35,7 @@ public struct SignUpView<Header: View,
     public init(
         state: SignUpState,
         signUpFields: [SignUpField]? = nil,
+        step: Binding<SignupStep>, // Add this line
         @ViewBuilder headerContent: () -> Header = {
             SignUpHeader()
         },
@@ -49,6 +50,7 @@ public struct SignUpView<Header: View,
         self.overridenSignUpFields = signUpFields
         let validators = Validators(state: state)
         self._validators = StateObject(wrappedValue: validators)
+        self._step = step
     }
 
     public var body: some View {
