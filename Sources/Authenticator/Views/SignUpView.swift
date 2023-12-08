@@ -18,7 +18,13 @@ public struct SignUpView<Header: View,
     private let headerContent: Header
     private let footerContent: Footer
     private let overridenSignUpFields: [SignUpField]?
+    
+    enum SignupStep {
+        case email
+        case detailed
+    }
 
+    @State private var step: SignupStep = .email
     var focusedField: FocusState<SignUpAttribute?> = FocusState()
 
     /// Creates a `SignUpView`
@@ -49,16 +55,24 @@ public struct SignUpView<Header: View,
         AuthenticatorView(isBusy: state.isBusy) {
             headerContent
             
-            ForEach(state.fields, id: \.self) { field in
-                SignUpInputField(
-                    field: field,
-                    validator: validators.validator(for: field.field)
-                )
-                .focused(focusedField.projectedValue, equals: field.field.attributeType)
-            #if os(iOS)
-                .textInputAutocapitalization(.never)
-            #endif
+            
+            switch step {
+            case .email:
+                Text("Email step")
+            case .detailed:
+                Text("Detailed step")
             }
+            
+//            ForEach(state.fields, id: \.self) { field in
+//                SignUpInputField(
+//                    field: field,
+//                    validator: validators.validator(for: field.field)
+//                )
+//                .focused(focusedField.projectedValue, equals: field.field.attributeType)
+//            #if os(iOS)
+//                .textInputAutocapitalization(.never)
+//            #endif
+//            }
                        
             Button("authenticator.signUp.button.createAccount".localized()) {
                 Task {
